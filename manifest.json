@@ -13,7 +13,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/Pulse_Android/",
+  "scope": "/Pulse_Android/",
   "background_color": "#F7F8FC",
   "theme_color": "#F7F8FC",
   "display": "standalone",
