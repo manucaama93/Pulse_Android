@@ -1,12 +1,13 @@
-// Service Worker básico para activar el modo PWA/Standalone en Android
 self.addEventListener('install', (e) => {
-  self.skipWaiting();
+    self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-  return self.clients.claim();
+    e.waitUntil(clients.claim());
 });
 
 self.addEventListener('fetch', (e) => {
-  e.respondWith(fetch(e.request));
+    e.respondWith(
+        fetch(e.request).catch(() => caches.match(e.request))
+    );
 });
