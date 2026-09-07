@@ -2,62 +2,70 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Calculadora Android</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Calculadora</title>
 
-    <!-- Configuración para Android PWA / Standalone -->
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#F7F8FC">
 
-    <!-- Configuración para iOS / Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Calculadora">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
 
     <style>
         :root {
-            --bg-color: #121212;
-            --btn-num-bg: #2d2d2d;
-            --btn-num-text: #ffffff;
-            --btn-op-bg: #4b5563;
-            --btn-op-text: #60a5fa;
-            --btn-action-bg: #374151;
-            --btn-action-text: #f87171;
-            --btn-equals-bg: #2563eb;
-            --btn-equals-text: #ffffff;
+            --bg-color: #F7F8FC;
+            --display-text: #191C1E;
+            --btn-num-bg: #E8ECF4;
+            --btn-num-text: #191C1E;
+            --btn-op-bg: #D3E3FD;
+            --btn-op-text: #041E49;
+            --btn-ac-bg: #A8C7FA;
+            --btn-ac-text: #041E49;
+            --btn-equals-bg: #63537A;
+            --btn-equals-text: #FFFFFF;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Google Sans', 'Roboto', -apple-system, sans-serif;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .calculator {
-            width: 100%;
-            max-width: 380px;
-            height: 680px;
             background-color: var(--bg-color);
-            border-radius: 28px;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            width: 100vw;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            padding: 16px;
+            padding: 12px 16px 24px 16px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 4px;
+            color: #444746;
+        }
+
+        .header-icon {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #444746;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
         }
 
         .display {
@@ -66,16 +74,15 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: flex-end;
-            padding: 20px 10px;
+            padding: 10px 8px 20px 8px;
             word-break: break-all;
-            overflow: hidden;
             width: 100%;
         }
 
         .expression-line {
-            color: #9ca3af;
-            font-size: 1.2rem;
-            min-height: 1.5rem;
+            color: #444746;
+            font-size: 1.4rem;
+            min-height: 2rem;
             margin-bottom: 8px;
             text-align: right;
             width: 100%;
@@ -94,37 +101,45 @@
         }
 
         .main-line {
-            color: #ffffff;
-            font-size: 3rem;
-            font-weight: 300;
+            color: var(--display-text);
+            font-size: 3.5rem;
+            font-weight: 400;
             line-height: 1.2;
             display: inline-block;
+        }
+
+        .expand-bar {
+            display: flex;
+            justify-content: flex-start;
+            padding: 0 8px 12px 8px;
+            color: #444746;
         }
 
         .keypad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            padding-bottom: 8px;
+            width: 100%;
         }
 
-        button {
+        button.btn {
             border: none;
             outline: none;
-            height: 68px;
+            aspect-ratio: 1 / 1;
+            width: 100%;
             border-radius: 50%;
-            font-size: 1.5rem;
-            font-weight: 500;
+            font-size: 1.6rem;
+            font-weight: 400;
             cursor: pointer;
-            transition: filter 0.1s, transform 0.1s;
+            transition: background-color 0.1s, transform 0.05s;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        button:active, button.is-pressed {
-            transform: scale(0.95);
-            filter: brightness(1.3);
+        button.btn:active, button.btn.is-pressed {
+            transform: scale(0.92);
+            filter: brightness(0.9);
         }
 
         .btn-number {
@@ -133,75 +148,83 @@
         }
 
         .btn-operator {
-            background-color: var(--btn-action-bg);
+            background-color: var(--btn-op-bg);
             color: var(--btn-op-text);
         }
 
-        .btn-action {
-            background-color: var(--btn-action-bg);
-            color: var(--btn-action-text);
+        .btn-ac {
+            background-color: var(--btn-ac-bg);
+            color: var(--btn-ac-text);
         }
 
         .btn-equals {
             background-color: var(--btn-equals-bg);
             color: var(--btn-equals-text);
-            border-radius: 24px;
         }
 
         .btn svg {
-            fill: none;
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            fill: currentColor;
             pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-<div class="calculator">
-    <div class="display">
-        <div class="expression-line" id="expressionLine"></div>
-        <div class="main-line-wrapper" id="mainWrapper">
-            <div class="main-line" id="mainLine">0</div>
-        </div>
-    </div>
-    <div class="keypad" id="keypad">
-        <button class="btn btn-action" data-action="backspace">
-            <svg width="28" height="28" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
-                <line x1="18" y1="9" x2="12" y2="15"></line>
-                <line x1="12" y1="9" x2="18" y2="15"></line>
-            </svg>
-        </button>
-        <button class="btn btn-action" id="clearBtn" data-action="ac">AC</button>
-        <button class="btn btn-operator" data-action="operator" data-val="%">%</button>
-        <button class="btn btn-operator" data-action="operator" data-val="÷">÷</button>
+<div class="header-actions">
+    <button class="header-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 7 7 7.07 7.07 0 0 1-6-3.42l-1.42 1.42A8.91 8.91 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+    </button>
+    <button class="header-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    </button>
+</div>
 
-        <button class="btn btn-number" data-action="digit" data-val="7">7</button>
-        <button class="btn btn-number" data-action="digit" data-val="8">8</button>
-        <button class="btn btn-number" data-action="digit" data-val="9">9</button>
-        <button class="btn btn-operator" data-action="operator" data-val="×">×</button>
-
-        <button class="btn btn-number" data-action="digit" data-val="4">4</button>
-        <button class="btn btn-number" data-action="digit" data-val="5">5</button>
-        <button class="btn btn-number" data-action="digit" data-val="6">6</button>
-        <button class="btn btn-operator" data-action="operator" data-val="-">−</button>
-
-        <button class="btn btn-number" data-action="digit" data-val="1">1</button>
-        <button class="btn btn-number" data-action="digit" data-val="2">2</button>
-        <button class="btn btn-number" data-action="digit" data-val="3">3</button>
-        <button class="btn btn-operator" data-action="operator" data-val="+">+</button>
-
-        <button class="btn btn-number" data-action="toggleSign">±</button>
-        <button class="btn btn-number" data-action="digit" data-val="0">0</button>
-        <button class="btn btn-number" data-action="decimal">,</button>
-        <button class="btn btn-equals" data-action="equal">=</button>
+<div class="display">
+    <div class="expression-line" id="expressionLine"></div>
+    <div class="main-line-wrapper" id="mainWrapper">
+        <div class="main-line" id="mainLine">0</div>
     </div>
 </div>
 
+<div class="expand-bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="#444746"><path d="M12 5.83L15.17 9l1.41-1.41L12 2 7.41 7.59 8.83 9 12 5.83zm0 12.34L8.83 15l-1.41 1.41L12 22l4.59-5.59L15.17 15 12 18.17z"/></svg>
+</div>
+
+<div class="keypad" id="keypad">
+    <!-- Fila 1 -->
+    <button class="btn btn-ac" id="clearBtn" data-action="ac">AC</button>
+    <button class="btn btn-operator" data-action="parens">( )</button>
+    <button class="btn btn-operator" data-action="operator" data-val="%">%</button>
+    <button class="btn btn-operator" data-action="operator" data-val="÷">÷</button>
+
+    <!-- Fila 2 -->
+    <button class="btn btn-number" data-action="digit" data-val="7">7</button>
+    <button class="btn btn-number" data-action="digit" data-val="8">8</button>
+    <button class="btn btn-number" data-action="digit" data-val="9">9</button>
+    <button class="btn btn-operator" data-action="operator" data-val="×">×</button>
+
+    <!-- Fila 3 -->
+    <button class="btn btn-number" data-action="digit" data-val="4">4</button>
+    <button class="btn btn-number" data-action="digit" data-val="5">5</button>
+    <button class="btn btn-number" data-action="digit" data-val="6">6</button>
+    <button class="btn btn-operator" data-action="operator" data-val="-">−</button>
+
+    <!-- Fila 4 -->
+    <button class="btn btn-number" data-action="digit" data-val="1">1</button>
+    <button class="btn btn-number" data-action="digit" data-val="2">2</button>
+    <button class="btn btn-number" data-action="digit" data-val="3">3</button>
+    <button class="btn btn-operator" data-action="operator" data-val="+">+</button>
+
+    <!-- Fila 5 -->
+    <button class="btn btn-number" data-action="digit" data-val="0">0</button>
+    <button class="btn btn-number" data-action="decimal">.</button>
+    <button class="btn btn-number" data-action="backspace">
+        <svg width="24" height="24" viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.67-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"/></svg>
+    </button>
+    <button class="btn btn-equals" data-action="equal">=</button>
+</div>
+
 <script>
-    // Registro del Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
@@ -227,14 +250,14 @@
 
     function formatNumber(valStr) {
         if (!valStr || valStr === 'Error') return valStr;
-        const parts = valStr.split(',');
+        const parts = valStr.split('.');
         let integerPart = parts[0];
-        const decimalPart = parts.length > 1 ? ',' + parts[1] : '';
+        const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
 
         const isNegative = integerPart.startsWith('-');
         if (isNegative) integerPart = integerPart.substring(1);
 
-        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         return (isNegative ? '-' : '') + formattedInteger + decimalPart;
     }
 
@@ -263,7 +286,7 @@
             mainLineEl.innerText = formatted;
         }
 
-        clearBtnEl.innerText = (currentValue !== '0' || previousValue !== null || stage === 4) ? 'C' : 'AC';
+        clearBtnEl.innerText = (currentValue !== '0' || previousValue !== null || stage === 4) ? 'AC' : 'AC';
     }
 
     function getFutureTargetNumber() {
@@ -334,12 +357,12 @@
         }
 
         if (operator === '+' && stage === 1) {
-            const num1 = parseFloat(previousValue.replace(',', '.'));
-            const num2 = parseFloat(currentValue.replace(',', '.'));
+            const num1 = parseFloat(previousValue);
+            const num2 = parseFloat(currentValue);
             const sum = num1 + num2;
 
             expressionLineEl.innerText = `${formatNumber(previousValue)}+${formatNumber(currentValue)}`;
-            currentValue = String(sum).replace('.', ',');
+            currentValue = String(sum);
             stage = 2;
             operator = null;
             previousValue = null;
@@ -349,12 +372,12 @@
         }
 
         if (operator === '×' && stage === 2) {
-            const num1 = parseFloat(previousValue.replace(',', '.'));
-            const num2 = parseFloat(currentValue.replace(',', '.'));
+            const num1 = parseFloat(previousValue);
+            const num2 = parseFloat(currentValue);
             currentX = Math.round(num1 * num2);
 
             expressionLineEl.innerText = `${formatNumber(previousValue)}×${formatNumber(currentValue)}`;
-            currentValue = String(currentX).replace('.', ',');
+            currentValue = String(currentX);
             stage = 3;
             operator = null;
             previousValue = null;
@@ -364,8 +387,8 @@
         }
 
         if (operator === null || previousValue === null) return;
-        const num1 = parseFloat(previousValue.replace(',', '.'));
-        const num2 = parseFloat(currentValue.replace(',', '.'));
+        const num1 = parseFloat(previousValue);
+        const num2 = parseFloat(currentValue);
         let result = 0;
 
         switch (operator) {
@@ -376,7 +399,7 @@
         }
 
         expressionLineEl.innerText = `${formatNumber(previousValue)}${operator}${formatNumber(currentValue)}`;
-        currentValue = String(result).replace('.', ',');
+        currentValue = String(result);
         operator = null;
         previousValue = null;
         waitingForSecondOperand = false;
@@ -407,22 +430,16 @@
         updateDisplay();
     }
 
-    function toggleSign() {
-        if (currentValue === '0' || stage === 4) return;
-        currentValue = currentValue.startsWith('-') ? currentValue.substring(1) : '-' + currentValue;
-        updateDisplay();
-    }
-
     function inputDecimal() {
         if (stage === 4) return;
         if (waitingForSecondOperand) {
-            currentValue = '0,';
+            currentValue = '0.';
             waitingForSecondOperand = false;
             updateDisplay();
             return;
         }
-        if (!currentValue.includes(',')) {
-            currentValue += ',';
+        if (!currentValue.includes('.')) {
+            currentValue += '.';
             updateDisplay();
         }
     }
@@ -446,9 +463,6 @@
                 break;
             case 'backspace':
                 handleBackspace();
-                break;
-            case 'toggleSign':
-                toggleSign();
                 break;
             case 'decimal':
                 inputDecimal();
